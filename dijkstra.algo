@@ -1,0 +1,52 @@
+function dijkstra(graph, start) {
+    const distances = {};
+    const visited = {};
+    const priorityQueue = new PriorityQueue();
+
+    // Initialize distances with Infinity for all vertices except the start vertex
+    for (let vertex in graph) {
+        distances[vertex] = vertex === start ? 0 : Infinity;
+        priorityQueue.enqueue(vertex, distances[vertex]);
+    }
+
+    while (!priorityQueue.isEmpty()) {
+        const currentVertex = priorityQueue.dequeue();
+        visited[currentVertex] = true;
+
+        for (let neighbor in graph[currentVertex]) {
+            const distanceToNeighbor = distances[currentVertex] + graph[currentVertex][neighbor];
+            if (distanceToNeighbor < distances[neighbor]) {
+                distances[neighbor] = distanceToNeighbor;
+                if (!visited[neighbor]) {
+                    priorityQueue.enqueue(neighbor, distanceToNeighbor);
+                }
+            }
+        }
+    }
+
+    return distances;
+}
+
+// Priority Queue implementation
+class PriorityQueue {
+    constructor() {
+        this.queue = [];
+    }
+
+    enqueue(vertex, priority) {
+        this.queue.push({ vertex, priority });
+        this.sort();
+    }
+
+    dequeue() {
+        return this.queue.shift().vertex;
+    }
+
+    isEmpty() {
+        return this.queue.length === 0;
+    }
+
+    sort() {
+        this.queue.sort((a, b) => a.priority - b.priority);
+    }
+}
